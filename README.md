@@ -1,3 +1,6 @@
+# Notes, quirks, and discoveries during the process
+`.github/notes/HowToFixAndKnowIssues.md`
+
 # Simple frontpage
 <img width="932" height="956" alt="image" src="https://github.com/user-attachments/assets/bf6101e8-6054-4493-ac8e-39638ef1109b" />
 
