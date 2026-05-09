@@ -1,0 +1,28 @@
+@model EventCardViewModel
+
+<article class="event-card" data-event-key="@Model.ContentKey">
+    <a class="event-card-link" href="@Model.DetailUrl">
+        <div class="event-card-media">
+            <img src="@Model.HeroImageUrl" alt="@Model.HeroImageAlt" loading="lazy" />
+            <span class="event-card-badge">@Model.EventDate.ToString("MMM d")</span>
+        </div>
+
+        <div class="event-card-content">
+            <p class="event-card-date">@Model.EventDate.ToString("ddd, MMM d")</p>
+            <h2>@Model.Title</h2>
+            <p class="event-card-venue">@Model.VenueName</p>
+            <p class="event-card-countdown" data-countdown data-event-date="@Model.EventDate.ToString("o")">Loading countdown...</p>
+            <p class="event-card-summary">@Model.Summary</p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ArtistLineup))
+            {
+                <p class="event-card-lineup">@Model.ArtistLineup</p>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.TicketCtaLabel) && !string.IsNullOrWhiteSpace(Model.TicketCtaUrl))
+            {
+                <span class="event-card-ticket">@Model.TicketCtaLabel</span>
+            }
+        </div>
+    </a>
+</article>

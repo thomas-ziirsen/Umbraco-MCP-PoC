@@ -1,0 +1,176 @@
+﻿@inherits UmbracoViewPage
+@using MyProject.Features.Events
+@inject IEventRegistrationService RegistrationService
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    EventDetailViewModel? eventPage = EventContentMapper.MapEventDetail(Model);
+    string pageTitle = eventPage?.Title ?? (Model.Name + " | Event Unavailable");
+    string registrationState = Context.Request.Query["registration"].ToString();
+    bool isEditorAuthenticated = User?.Identity?.IsAuthenticated == true;
+
+    bool hasExternalTicketUrl = false;
+    if (!string.IsNullOrWhiteSpace(eventPage?.TicketCtaUrl) && Uri.TryCreate(eventPage.TicketCtaUrl, UriKind.Absolute, out Uri? ticketUri))
+    {
+        hasExternalTicketUrl = !ticketUri.Host.Contains("tickets.example.com", StringComparison.OrdinalIgnoreCase);
+    }
+
+    IReadOnlyList<EventRegistrationRow> registrations = Array.Empty<EventRegistrationRow>();
+    if (eventPage is not null && isEditorAuthenticated)
+    {
+        registrations = await RegistrationService.ListAsync(eventPage.ContentKey);
+    }
+
+    ViewData["Title"] = pageTitle;
+    ViewData["BodyClass"] = "events-page events-detail-page";
+}
+
+<main class="events-shell">
+    @if (eventPage is null)
+    {
+        <section class="event-unavailable panel-glow" data-reveal style="--reveal-order: 0;">
+            <a class="event-back-link" href="@(Model.Parent?.Url() ?? "/")">Back to events</a>
+            <h1>Event unavailable</h1>
+            <p>This event is missing required content and cannot be displayed yet.</p>
+        </section>
+    }
+    else
+    {
+        <a class="event-back-link" href="@eventPage.BackLinkUrl" data-reveal style="--reveal-order: 0;">@eventPage.BackLinkLabel</a>
+
+        <article class="event-detail panel-glow">
+            <div class="event-detail-hero" data-reveal style="--reveal-order: 1;">
+                <div class="event-detail-copy">
+                    <p class="events-kicker">@eventPage.EventDate.ToString("dddd, MMMM d, yyyy 'at' h:mm tt")</p>
+                    <h1>@eventPage.Title</h1>
+                    <div class="event-meta-strip">
+                        <p class="event-detail-venue">@eventPage.VenueName</p>
+                        <p class="event-detail-chip">Doors open with the first note</p>
+                        <p class="event-detail-chip event-countdown-chip" data-countdown data-event-date="@eventPage.EventDate.ToString("o")">Loading countdown...</p>
+                    </div>
+                    <p class="event-detail-summary">@eventPage.Summary</p>
+
+                    @if (!string.IsNullOrWhiteSpace(eventPage.ArtistLineup))
+                    {
+                        <p class="event-detail-lineup">@eventPage.ArtistLineup</p>
+                    }
+
+                    @if (hasExternalTicketUrl && !string.IsNullOrWhiteSpace(eventPage.TicketCtaLabel))
+                    {
+                        <a class="event-ticket-link" href="@eventPage.TicketCtaUrl" target="_blank" rel="noreferrer">@eventPage.TicketCtaLabel</a>
+                    }
+                    else
+                    {
+                        <a class="event-ticket-link" href="#event-registration">Register For This Event</a>
+                    }
+                </div>
+
+                <div class="event-detail-media">
+                    <img src="@eventPage.HeroImageUrl" alt="@eventPage.HeroImageAlt" loading="eager" />
+                </div>
+            </div>
+
+            <div class="event-detail-body" data-reveal style="--reveal-order: 2;">
+                <div class="event-rich-text">@eventPage.BodyContent</div>
+
+                @if (!string.IsNullOrWhiteSpace(eventPage.SecondaryImageUrl))
+                {
+                    <aside class="event-secondary-media">
+                        <img src="@eventPage.SecondaryImageUrl" alt="@eventPage.SecondaryImageAlt" loading="lazy" />
+                    </aside>
+                }
+            </div>
+        </article>
+
+        <section id="event-registration" class="event-registration panel-glow" data-reveal style="--reveal-order: 3;">
+            <h2>Register For This Event</h2>
+            <p class="event-registration-intro">Reserve your spot with a quick registration form.</p>
+
+            @if (registrationState == "success")
+            {
+                <p class="event-registration-message is-success">Registration submitted. We will contact you with event updates.</p>
+            }
+            else if (registrationState == "duplicate")
+            {
+                <p class="event-registration-message is-warning">This email is already registered for this event.</p>
+            }
+            else if (registrationState == "invalid")
+            {
+                <p class="event-registration-message is-warning">Please check the required fields and consent checkbox.</p>
+            }
+            else if (registrationState == "error")
+            {
+                <p class="event-registration-message is-error">Registration could not be completed right now. Please try again.</p>
+            }
+
+            <form class="event-registration-form" method="post" action="/events/register">
+                <input type="hidden" name="eventKey" value="@eventPage.ContentKey" />
+                <input type="hidden" name="eventName" value="@eventPage.Title" />
+                <input type="hidden" name="returnUrl" value="@Model.Url()" />
+
+                <label>
+                    Full name
+                    <input type="text" name="name" required maxlength="120" autocomplete="name" />
+                </label>
+
+                <label>
+                    Email
+                    <input type="email" name="email" required maxlength="160" autocomplete="email" />
+                </label>
+
+                <label>
+                    Phone (optional)
+                    <input type="tel" name="phone" maxlength="40" autocomplete="tel" />
+                </label>
+
+                <label class="event-registration-consent">
+                    <input type="checkbox" name="consent" required />
+                    <span>I consent to being contacted about this event registration.</span>
+                </label>
+
+                <button type="submit">Complete Registration</button>
+            </form>
+        </section>
+
+        @if (isEditorAuthenticated)
+        {
+            <section class="event-registration event-participants panel-glow" data-reveal style="--reveal-order: 4;">
+                <h2>Participant Details</h2>
+                <p class="event-registration-intro">Live registrations for this event in table form.</p>
+
+                @if (registrations.Count == 0)
+                {
+                    <p class="event-registration-message is-warning">No participants registered yet.</p>
+                }
+                else
+                {
+                    <div class="event-participants-table-wrap">
+                        <table class="event-participants-table">
+                            <thead>
+                                <tr>
+                                    <th>Registered (UTC)</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (EventRegistrationRow row in registrations)
+                                {
+                                    <tr>
+                                        <td>@row.CreatedUtc.ToString("yyyy-MM-dd HH:mm")</td>
+                                        <td>@row.Name</td>
+                                        <td>@row.Email</td>
+                                        <td>@(string.IsNullOrWhiteSpace(row.Phone) ? "-" : row.Phone)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                <a class="event-ticket-link" href="/umbraco/backoffice/registrations?eventKey=@eventPage.ContentKey">Open Backoffice Event Registrations</a>
+            </section>
+        }
+    }
+</main>

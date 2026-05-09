@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../umbraco-package-schema.json",
+  "name": "Events Registrations",
+  "version": "0.1.0",
+  "extensions": [
+    {
+      "type": "workspaceView",
+      "kind": "contentEditor",
+      "alias": "MyProject.WorkspaceView.EventRegistrations",
+      "name": "Event Registrations Workspace View",
+      "element": "/App_Plugins/events-registrations/event-registrations-workspace-view.element.js",
+      "meta": {
+        "label": "Registrations",
+        "pathname": "/registrations",
+        "icon": "icon-users"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "Umb.Workspace.Document"
+        },
+        {
+          "alias": "Umb.Condition.WorkspaceContentTypeAlias",
+          "match": "eventPage"
+        }
+      ]
+    }
+  ]
+}

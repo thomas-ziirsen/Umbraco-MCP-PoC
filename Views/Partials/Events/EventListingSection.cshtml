@@ -1,0 +1,45 @@
+@model EventsLandingPageViewModel
+
+<section class="events-hero panel-glow" data-reveal style="--reveal-order: 0;">
+    <div class="events-hero-copy">
+        <p class="events-kicker">Live Music</p>
+        <h1>@Model.IntroHeading</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.IntroSummary))
+        {
+            <p class="events-hero-summary">@Model.IntroSummary</p>
+        }
+    </div>
+
+    <div class="events-hero-orbit" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</section>
+
+@if (Model.UpcomingEvents.Count == 0)
+{
+    <section class="events-empty-state panel-glow" data-reveal style="--reveal-order: 1;">
+        <h2>@Model.EmptyStateHeading</h2>
+        <p>@Model.EmptyStateBody</p>
+    </section>
+}
+else
+{
+    <section class="events-listing-section" aria-labelledby="upcoming-events-heading">
+        <div class="events-listing-header" data-reveal style="--reveal-order: 1;">
+            <p class="events-section-label">Upcoming</p>
+            <h2 id="upcoming-events-heading">A curated run of upcoming nights</h2>
+        </div>
+
+        <div class="events-grid" aria-label="Upcoming music events">
+            @for (int index = 0; index < Model.UpcomingEvents.Count; index++)
+            {
+                EventCardViewModel eventCard = Model.UpcomingEvents[index];
+                <div class="event-card-stage" data-reveal style="--reveal-order: @(index + 2);">
+                    @await Html.PartialAsync("~/Views/Partials/Events/EventCard.cshtml", eventCard)
+                </div>
+            }
+        </div>
+    </section>
+}

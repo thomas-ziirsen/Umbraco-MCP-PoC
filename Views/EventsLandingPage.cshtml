@@ -1,0 +1,12 @@
+﻿@inherits UmbracoViewPage
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var landingPage = EventContentMapper.MapLandingPage(Model);
+    ViewData["Title"] = landingPage.PageTitle;
+    ViewData["BodyClass"] = "events-page events-listing-page";
+}
+
+<main class="events-shell">
+    @await Html.PartialAsync("~/Views/Partials/Events/EventListingSection.cshtml", landingPage)
+</main>

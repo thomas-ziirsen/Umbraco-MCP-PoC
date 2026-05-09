@@ -1,0 +1,525 @@
+:root {
+    --events-bg: #0f1115;
+    --events-panel: #181c24;
+    --events-panel-alt: #202733;
+    --events-line: rgba(255, 255, 255, 0.12);
+    --events-text: #f3efe8;
+    --events-muted: #c2bbaf;
+    --events-accent: #f26a4b;
+    --events-accent-soft: #ffbe7a;
+    --events-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background:
+        radial-gradient(circle at top, rgba(242, 106, 75, 0.22), transparent 34%),
+        linear-gradient(180deg, #13161d 0%, #0d0f13 100%);
+    color: var(--events-text);
+    font-family: "Aptos", "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: inherit;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.events-shell {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 48px 20px 72px;
+    position: relative;
+}
+
+.events-hero,
+.events-empty-state,
+.event-unavailable,
+.event-detail,
+.event-card {
+    background: rgba(18, 22, 28, 0.82);
+    border: 1px solid var(--events-line);
+    box-shadow: var(--events-shadow);
+}
+
+.events-hero,
+.events-empty-state,
+.event-unavailable {
+    border-radius: 28px;
+    padding: 32px;
+}
+
+.panel-glow {
+    position: relative;
+}
+
+.panel-glow::before {
+    background: linear-gradient(120deg, rgba(242, 106, 75, 0.16), rgba(255, 190, 122, 0.02));
+    border-radius: inherit;
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+}
+
+.events-kicker,
+.event-card-date {
+    color: var(--events-accent-soft);
+    letter-spacing: 0.14em;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+}
+
+.events-hero h1,
+.event-detail h1,
+.event-card h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 0.95;
+    margin: 0;
+}
+
+.events-hero h1,
+.event-detail h1 {
+    font-size: clamp(3rem, 8vw, 5.6rem);
+}
+
+.events-hero {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr);
+    margin-bottom: 28px;
+    overflow: hidden;
+}
+
+.events-hero-copy,
+.events-listing-header,
+.event-detail-copy,
+.event-rich-text,
+.event-secondary-media,
+.events-empty-state,
+.event-unavailable {
+    position: relative;
+    z-index: 1;
+}
+
+.events-hero-orbit {
+    align-items: center;
+    display: grid;
+    justify-items: center;
+    min-height: 280px;
+    position: relative;
+}
+
+.events-hero-orbit span {
+    border: 1px solid rgba(255, 190, 122, 0.22);
+    border-radius: 50%;
+    position: absolute;
+}
+
+.events-hero-orbit span:nth-child(1) {
+    height: 220px;
+    width: 220px;
+}
+
+.events-hero-orbit span:nth-child(2) {
+    height: 150px;
+    width: 150px;
+}
+
+.events-hero-orbit span:nth-child(3) {
+    background: radial-gradient(circle, rgba(242, 106, 75, 0.9), rgba(242, 106, 75, 0.12));
+    border: 0;
+    box-shadow: 0 0 48px rgba(242, 106, 75, 0.36);
+    height: 44px;
+    width: 44px;
+}
+
+.events-hero-summary,
+.event-detail-summary,
+.event-card-summary,
+.event-rich-text,
+.events-empty-state p,
+.event-unavailable p {
+    color: var(--events-muted);
+    line-height: 1.7;
+}
+
+.events-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    margin-top: 28px;
+}
+
+.events-listing-section {
+    display: grid;
+    gap: 18px;
+}
+
+.events-listing-header {
+    align-items: end;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.events-section-label {
+    color: var(--events-accent-soft);
+    letter-spacing: 0.18em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.events-listing-header h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    margin: 0;
+    text-align: right;
+}
+
+.event-card-stage {
+    min-width: 0;
+}
+
+.event-card {
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.event-card-link {
+    display: grid;
+    grid-template-rows: 240px 1fr;
+    min-height: 100%;
+    text-decoration: none;
+}
+
+.event-card-media img,
+.event-detail-media img,
+.event-secondary-media img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.event-card-media {
+    overflow: hidden;
+    position: relative;
+}
+
+.event-card-media img {
+    transition: transform 360ms ease;
+}
+
+.event-card-badge {
+    background: rgba(15, 17, 21, 0.82);
+    border: 1px solid rgba(255, 190, 122, 0.35);
+    border-radius: 999px;
+    color: var(--events-accent-soft);
+    left: 16px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 16px;
+}
+
+.event-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    position: relative;
+    z-index: 1;
+}
+
+.event-card-venue,
+.event-detail-venue,
+.event-detail-lineup,
+.event-card-lineup,
+.event-back-link {
+    color: var(--events-accent-soft);
+}
+
+.event-card-countdown {
+    background: rgba(255, 190, 122, 0.12);
+    border: 1px solid rgba(255, 190, 122, 0.28);
+    border-radius: 10px;
+    color: var(--events-accent-soft);
+    margin: 0;
+    padding: 8px 10px;
+}
+
+.event-countdown-chip {
+    color: var(--events-accent-soft);
+}
+
+.event-card-ticket,
+.event-ticket-link,
+.event-back-link {
+    align-self: flex-start;
+    border: 1px solid rgba(255, 190, 122, 0.36);
+    border-radius: 999px;
+    padding: 10px 16px;
+    text-decoration: none;
+}
+
+.event-ticket-link {
+    background: linear-gradient(135deg, var(--events-accent), var(--events-accent-soft));
+    border: 0;
+    color: #14161c;
+    font-weight: 700;
+}
+
+.event-card:hover,
+.event-card:focus-within {
+    border-color: rgba(255, 190, 122, 0.32);
+    box-shadow: 0 32px 90px rgba(0, 0, 0, 0.32);
+    transform: translateY(-8px);
+}
+
+.event-card:hover .event-card-media img,
+.event-card:focus-within .event-card-media img {
+    transform: scale(1.04);
+}
+
+.event-detail {
+    border-radius: 28px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.event-detail-hero,
+.event-detail-body {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.event-detail-copy,
+.event-rich-text,
+.event-secondary-media {
+    padding: 28px;
+}
+
+.event-meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.event-detail-chip {
+    border: 1px solid rgba(255, 190, 122, 0.24);
+    border-radius: 999px;
+    color: var(--events-muted);
+    margin: 0;
+    padding: 8px 14px;
+}
+
+.event-detail-media {
+    min-height: 360px;
+}
+
+.event-detail-media,
+.event-secondary-media {
+    position: relative;
+}
+
+.event-detail-media::after,
+.event-secondary-media::after {
+    background: linear-gradient(180deg, transparent, rgba(15, 17, 21, 0.18));
+    content: "";
+    inset: 0;
+    position: absolute;
+}
+
+.event-rich-text :is(h2, h3, h4) {
+    color: var(--events-text);
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.event-rich-text a {
+    color: var(--events-accent-soft);
+}
+
+.event-registration {
+    border-radius: 24px;
+    margin-top: 24px;
+    padding: 24px;
+    position: relative;
+}
+
+.event-registration h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    margin: 0 0 8px;
+}
+
+.event-registration-intro {
+    color: var(--events-muted);
+    margin: 0 0 18px;
+}
+
+.event-registration-message {
+    border-radius: 12px;
+    margin: 0 0 16px;
+    padding: 10px 12px;
+}
+
+.event-registration-message.is-success {
+    background: rgba(96, 204, 122, 0.18);
+    border: 1px solid rgba(96, 204, 122, 0.32);
+    color: #d2f8dc;
+}
+
+.event-registration-message.is-warning {
+    background: rgba(255, 190, 122, 0.18);
+    border: 1px solid rgba(255, 190, 122, 0.32);
+    color: #ffe2b8;
+}
+
+.event-registration-message.is-error {
+    background: rgba(242, 106, 75, 0.18);
+    border: 1px solid rgba(242, 106, 75, 0.34);
+    color: #ffd2c8;
+}
+
+.event-registration-form {
+    display: grid;
+    gap: 12px;
+}
+
+.event-registration-form label {
+    color: var(--events-muted);
+    display: grid;
+    font-size: 0.95rem;
+    gap: 6px;
+}
+
+.event-registration-form input[type="text"],
+.event-registration-form input[type="email"],
+.event-registration-form input[type="tel"] {
+    background: rgba(12, 15, 19, 0.65);
+    border: 1px solid var(--events-line);
+    border-radius: 10px;
+    color: var(--events-text);
+    padding: 10px 12px;
+}
+
+.event-registration-consent {
+    align-items: center;
+    display: flex !important;
+    gap: 10px;
+}
+
+.event-registration-form button {
+    background: linear-gradient(135deg, var(--events-accent), var(--events-accent-soft));
+    border: 0;
+    border-radius: 999px;
+    color: #14161c;
+    cursor: pointer;
+    font-weight: 700;
+    justify-self: start;
+    padding: 10px 18px;
+}
+
+.event-participants-table-wrap {
+    overflow-x: auto;
+}
+
+.event-participants-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.event-participants-table th,
+.event-participants-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 9px 10px;
+    text-align: left;
+}
+
+.event-participants-table th {
+    color: var(--events-accent-soft);
+    font-weight: 700;
+}
+
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(32px);
+    transition:
+        opacity 520ms ease,
+        transform 520ms ease;
+    transition-delay: calc(var(--reveal-order, 0) * 60ms);
+}
+
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+    .events-hero,
+    .events-listing-header,
+    .event-detail-hero,
+    .event-detail-body {
+        grid-template-columns: 1fr;
+    }
+
+    .events-listing-header h2 {
+        text-align: left;
+    }
+
+    .event-detail-media {
+        min-height: 280px;
+        order: -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .events-shell {
+        padding: 24px 14px 56px;
+    }
+
+    .events-hero,
+    .events-empty-state,
+    .event-unavailable,
+    .event-detail-copy,
+    .event-rich-text,
+    .event-secondary-media,
+    .event-card-content {
+        padding: 20px;
+    }
+
+    .event-card-link {
+        grid-template-rows: 200px 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+    }
+
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+    }
+}
