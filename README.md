@@ -1,3 +1,26 @@
+# AI-Orchestrated Umbraco Music Events PoC
+
+An Umbraco-based music events platform prototype built using GitHub Copilot Agent Mode, custom AI agents, and markdown-driven project orchestration.
+
+Features
+Umbraco-managed event content
+Event listing and detail page architecture
+Responsive Razor-based frontend
+Animated event presentation
+Ticket purchase structure planning
+AI-assisted planning, implementation, and validation workflows
+AI Workflow System
+
+The project uses custom Architect, Backend, Frontend, Tester, and Reviewer agents coordinated through persistent markdown state files:
+
+`RUNBOOK.md`
+`TASKS.md`
+`STATUS.md`
+`EVIDENCE.md`
+`DECISIONS.md`
+
+This enables structured AI-assisted feature execution, progress tracking, and validation across development sessions.
+
 # Notes, quirks, and discoveries during the process
 `.github/notes/HowToFixAndKnowIssues.md`
 
